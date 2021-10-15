@@ -5,23 +5,35 @@
   </div>
 
   <div class="ListaPokemones" v-if="listAll">
-    <div class="div-lista-pokemon" v-for="(pokemon, index) in filteredCustomers" v-bind:key="index">
+    <div class="pokemon-card-empty" v-if="!filtrarBusquedaAll.length">
+      <p class="titulo">Uh-oh!</p>
+      <p class="descripcion">You look lost on your journey!</p>
+      <button class="boton">Go back home</button>
+    </div>
+    <div class="div-lista-pokemon" v-for="(pokemon) in filtrarBusquedaAll" v-bind:key="pokemon.name">
       <div class="pokemon-card">
         <div class="divOpenModal" v-on:click="modalInfoPokemon(pokemon.name)">
           <p class="pokemon-name">{{ pokemon.name }}</p>
         </div>
-        <img class="FavDisabled" v-on:click="agregarFavoritos(pokemon)" src="../assets/Fav-Disabled.png" alt=""/>
+        <img class="btnFavoritos" v-on:click="agregarFavoritos(pokemon)" 
+        :src="favoritesAdded.includes(pokemon.name) == true ? require('../assets/Fav-Active.png') : require('../assets/Fav-Disabled.png')" alt=""/>
       </div>
     </div>
   </div>
 
   <div class="ListaPokemones" v-if="listFavorites">
-    <div class="div-lista-pokemon" v-for="pokemon in favorites" v-bind:key="pokemon">
+    <div class="pokemon-card-empty" v-if="!filtrarBusquedaFav.length">
+      <p class="titulo">Uh-oh!</p>
+      <p class="descripcion">You look lost on your journey!</p>
+      <button class="boton">Go back home</button>
+    </div>
+    <div class="div-lista-pokemon" v-for="(pokemon) in filtrarBusquedaFav" v-bind:key="pokemon.name">
       <div class="pokemon-card">
         <div class="divOpenModal" v-on:click="modalInfoPokemon(pokemon.name)">
           <p class="pokemon-name">{{ pokemon.name }}</p>
         </div>
-        <img class="FavDisabled" v-on:click="agregarFavoritos(pokemon)" src="../assets/Fav-Disabled.png" alt="" />
+        <img class="FavDisabled" v-on:click="agregarFavoritos(pokemon)"
+        :src="favoritesAdded.includes(pokemon.name) == true ? require('../assets/Fav-Active.png') : require('../assets/Fav-Disabled.png')" alt="" />
       </div>
     </div>
   </div>
@@ -50,9 +62,9 @@
           <hr/>
 
           <p class="tipoPokemon"><span class="tagBeforeName">Types:</span>
-            <span v-for="(testing, index) in tipoPokemonModal" v-bind:key="index">
+            <span v-for="(tagName, index) in tipoPokemonModal" v-bind:key="index">
                 <template v-if="index > 0">, </template>
-                {{ testing.type.name }}
+                {{ tagName.type.name }}
             </span>
           </p>
           <hr/>
@@ -77,9 +89,11 @@ export default {
       info: [],
       favorites: [],
       favoritesAdded: [],
-      buttonFavAdded: true,
+      isFavorite: null,
+      emptyList: true,
+      favoritesArrayButon: [],
       search: "",
-      testing: "",
+      tagName: "",
       listAll: true,
       listFavorites: false,
       showModal: false,
@@ -114,10 +128,13 @@ export default {
     },
     agregarFavoritos(pokemon) {
       console.log(this.favorites);
+      console.log("aa", this.filteredCustomers);
       if (this.favorites.length > 0) {
         for (var i = 0; i < this.favorites.length; i++) {
           if (this.favorites[i].name == pokemon.name) {
             this.favorites.splice(i, 1);
+            this.isFavorite = false;
+            this.favoritesAdded.splice(i, 1);
             console.log("boton favoritos desactivado");
             return;
           }
@@ -125,9 +142,11 @@ export default {
         this.favorites.push(pokemon);
         this.favoritesAdded.push(pokemon.name);
         console.log("boton favoritos activado");
+        this.isFavorite = true;
       } else {
         this.favorites.push(pokemon);
         this.favoritesAdded.push(pokemon.name);
+        this.isFavorite = true;
         console.log("boton favoritos activado");
       }
     },
@@ -141,8 +160,13 @@ export default {
     },
   },
   computed: {
-    filteredCustomers() {
+    filtrarBusquedaAll() {
       return this.info.filter((pokemon) => {
+        return pokemon.name.match(this.search);
+      });
+    },
+    filtrarBusquedaFav() {
+      return this.favorites.filter((pokemon) => {
         return pokemon.name.match(this.search);
       });
     },
@@ -247,12 +271,33 @@ export default {
     }
   }
 }
+
 .ListaPokemones {
   display: inline-block;
-  overflow-x: hidden;
-  overflow-y: scroll; /* Hide vertical scrollbar */
+  overflow: auto;
   margin-top: 40px;
   height: calc(100vh - 250px);
+  .pokemon-card-empty {
+    .titulo {
+      font-size: 36px;
+      font-weight: 700;
+    }
+    .descripcion {
+      font-size: 20px;
+      font-weight: 500;
+      margin-top: -15px;
+    }
+    .boton {
+      background-color: #f22539;
+      border: none;
+      color: white;
+      width: 155px;
+      height: 44px;
+      border-radius: 60px;
+      font-size: 18px;
+      font-family: "Lato", sans-serif;
+    }
+  }
   .div-lista-pokemon {
     .pokemon-card {
       display: flex;
@@ -266,7 +311,7 @@ export default {
         width: 510px;
         height: 60px;
       }
-      .FavDisabled {
+      .btnFavoritos {
         height: 50px;
         position: inherit;
         margin-right: 5px;

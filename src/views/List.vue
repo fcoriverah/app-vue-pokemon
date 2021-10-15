@@ -7,7 +7,7 @@
 
         <div class="all-button-div" v-on:click="$refs.listaPokemones.mostrarTodo()">
           <img class="button-list-icon" src="../assets/List-icon.png" alt="" />
-          <button class="all-button">
+          <button class="all-button" autofocus>
             <span class="all-button-text">All</span>
           </button>
         </div>
@@ -124,7 +124,7 @@ body {
         .all-button {
           font-family: "Lato", sans-serif;
           font-size: 18px;
-          background-color: #f22539;
+          background-color: #bfbfbf;
           color: white;
           border: none;
           border-radius: 60px;
@@ -134,6 +134,12 @@ body {
           .all-button-text {
             padding-left: 30px;
           }
+        }
+        .all-button:focus {
+          background-color: #F22539;
+        }
+        .all-button:hover {
+          background-color: #C00E20;
         }
       }
       .fav-button-div {
@@ -155,6 +161,12 @@ body {
           .fav-button-text {
             padding-left: 35px;
           }
+        }
+        .fav-button:focus {
+          background-color: #F22539;
+        }
+        .fav-button:hover {
+          background-color: #C00E20;
         }
       }
     }
