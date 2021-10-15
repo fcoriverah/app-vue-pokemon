@@ -251,6 +251,18 @@ export default {
 // importamos la URL Lato desde google
 @import url("https://fonts.googleapis.com/css2?family=Lato&display=swap&.css");
 
+//modal transicion
+.fade-enter-from,
+.fade-leave-active {
+  transition: opacity 0.4s;
+}
+
+.fade-enter,
+.fade-leave-to {
+  opacity: 0;
+}
+
+//modal
 .modal-overlay {
   font-family: "Lato", sans-serif;
   background-color: rgba(0, 0, 0, 0.5);
