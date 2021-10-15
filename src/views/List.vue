@@ -123,8 +123,8 @@ body {
       transform: translate(-50%, -50%);
       .all-button-div {
         .button-list-icon {
-          padding-top: 12px;
-          padding-left: 110px;
+          margin-top: 12px;
+          margin-left: 110px;
           position: absolute;
         }
         .all-button {
@@ -150,8 +150,8 @@ body {
       }
       .fav-button-div {
         .button-list-fav {
-          padding-top: 12px;
-          padding-left: 85px;
+          margin-top: 12px;
+          margin-left: 85px;
           position: absolute;
         }
         .fav-button {
@@ -192,8 +192,8 @@ body {
       .bottom-nav-buttons {
         .all-button-div {
           .button-list-icon {
-            padding-top: 11px;
-            padding-left: 49px;
+            margin-top: 11px;
+            margin-left: 49px;
           }
           .all-button {
             width: 150px;
@@ -201,8 +201,8 @@ body {
         }
         .fav-button-div {
           .button-list-fav {
-            padding-top: 10px;
-            padding-left: 26px;
+            margin-top: 10px;
+            margin-left: 26px;
           }
           .fav-button {
             width: 150px;
