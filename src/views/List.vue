@@ -1,10 +1,15 @@
 <template>
   <div class="list-container">
+
+    <!-- cargamos el componente ListaPokemones el cual nos trae todos los pokemones, de esta manera
+    el código queda mas limpio y con menos lineas -->
     <ListaPokemones ref="listaPokemones"></ListaPokemones>
 
     <div class="bottom-nav">
       <div class="bottom-nav-buttons">
 
+        <!-- botones que al hacer click en ellos (o en la clase que envuelve al boton)
+        se ejecuta la funcion para mostrar todos los pokemones (en este caso boton All) -->
         <div class="all-button-div" v-on:click="$refs.listaPokemones.mostrarTodo()">
           <img class="button-list-icon" src="../assets/List-icon.png" alt="" />
           <button class="all-button" autofocus>
@@ -12,9 +17,11 @@
           </button>
         </div>
 
+        <!-- botones que al hacer click en ellos (o en la clase que envuelve al boton)
+        se ejecuta la funcion para mostrar los pokemones en favoritos (en este caso boton Fav) -->
         <div class="fav-button-div" v-on:click="$refs.listaPokemones.mostrarFavoritos()">
           <img class="button-list-fav" src="../assets/Fav-icon.png" alt="" />
-          <button class="fav-button" v-bind:class="{ btnSelected: !clicked, btnInactive: clicked }" v-on:click="clicked = !clicked">
+          <button class="fav-button">
             <span class="fav-button-text">Favorites</span>
           </button>
         </div>
@@ -25,24 +32,23 @@
 </template>
 
 <script>
+// importamos el componente para traer la lista de pokemones
 import ListaPokemones from "../components/ListaPokemones.vue";
 
 export default {
   name: "ListaPokemonesComp",
   components: {
     ListaPokemones,
-  },
-  data() {
-    return {
-      clicked: false,
-    };
-    // console.log(ListaPokemones.info)
-  },
+  }
 };
 </script>
 
 
 <style lang="less">
+// Definimos el tipo de lenguaje, en este caso usare LESS ya que facilita mucho el trabajo
+// aparte de dejar el código mas ordenado y legible para otras personas
+
+// importamos la URL Lato desde google
 @import url("https://fonts.googleapis.com/css2?family=Montserrat&display=swap&.css");
 @import url("https://fonts.googleapis.com/css2?family=Lato&display=swap&.css");
 body {
@@ -97,7 +103,7 @@ body {
       background-color: white;
       border: none;
       height: 50px;
-      width: 523px;
+      width: 535px;
     }
   }
   .bottom-nav {
