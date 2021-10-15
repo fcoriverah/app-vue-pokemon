@@ -1,43 +1,78 @@
 <template>
+
+  <!--input que nos permite realizar filtros en la lista de pokemones recibidas
+  tanto para todos los pokemones o los que tenemos en favoritos -->
   <div class="input-div">
     <img class="img-input-lista" src="../assets/Vector.png" alt="" />
     <input class="input-lista" v-model="search" type="text" placeholder="Search"/>
   </div>
 
+   <!-- La lista de "todos" los pokemones se trae si la variable listAll esta en true, lo que cambia
+   al cambiar a la vista de favoritos, permitiendo mostrar u ocultar el div segun corresponda -->
   <div class="ListaPokemones" v-if="listAll">
+
+    <!-- si la busqueda no tiene resultados, se mostrara el div con el warning
+    permitiendo volver al inicio -->
     <div class="pokemon-card-empty" v-if="!filtrarBusquedaAll.length">
       <p class="titulo">Uh-oh!</p>
       <p class="descripcion">You look lost on your journey!</p>
-      <button class="boton">Go back home</button>
+      <router-link to="/"><button class="boton">Go back home</button></router-link>
     </div>
+
+    <!-- div que realiza un ciclo for (funcion de vuejs) el cual creará las entradas segun la cantidad
+    de pokemones nos haya vuelto la respuesta de axios -->
     <div class="div-lista-pokemon" v-for="(pokemon) in filtrarBusquedaAll" v-bind:key="pokemon.name">
       <div class="pokemon-card">
+
+        <!-- si hacemos click en el div/tarjeta de cada pokemon, nos mostrará un modal con informacion
+        sobre el pokemon -->
         <div class="divOpenModal" v-on:click="modalInfoPokemon(pokemon.name)">
           <p class="pokemon-name">{{ pokemon.name }}</p>
         </div>
+
+        <!-- si hacemos click en favoritos, podremos agregarlo a favoritos, en este paso hacemos una funcion "ternary"
+        en vue que nos permite realizar comparaciones, si el pokemon en este caso consultado esta en una lista de favoritos
+        cambiará su icono correspondiente a la estrella amarilla (indicando que esta en favoritos) -->
         <img class="btnFavoritos" v-on:click="agregarFavoritos(pokemon)" 
         :src="favoritesAdded.includes(pokemon.name) == true ? require('../assets/Fav-Active.png') : require('../assets/Fav-Disabled.png')" alt=""/>
       </div>
     </div>
   </div>
 
+  <!-- La lista de los pokemones favoritos, se trae si la variable listFavorites esta en true, lo que cambia
+   al cambiar a la vista de All, permitiendo mostrar u ocultar el div segun corresponda -->
   <div class="ListaPokemones" v-if="listFavorites">
+
+    <!-- si la busqueda no tiene resultados, se mostrara el div con el warning
+    permitiendo volver al inicio -->
     <div class="pokemon-card-empty" v-if="!filtrarBusquedaFav.length">
       <p class="titulo">Uh-oh!</p>
       <p class="descripcion">You look lost on your journey!</p>
-      <button class="boton">Go back home</button>
+      <router-link to="/"><button class="boton">Go back home</button></router-link>
     </div>
+
+    <!-- div que realiza un ciclo for (funcion de vuejs) el cual creará las entradas segun la cantidad
+    de pokemones que esten en nuestro array de favoritos -->
     <div class="div-lista-pokemon" v-for="(pokemon) in filtrarBusquedaFav" v-bind:key="pokemon.name">
       <div class="pokemon-card">
+
+        <!-- si hacemos click en el div/tarjeta de cada pokemon, nos mostrará un modal con informacion
+        sobre el pokemon -->
         <div class="divOpenModal" v-on:click="modalInfoPokemon(pokemon.name)">
           <p class="pokemon-name">{{ pokemon.name }}</p>
         </div>
-        <img class="FavDisabled" v-on:click="agregarFavoritos(pokemon)"
+
+        <!-- funcion "ternary" para ver si el pokemon esta en favoritos, esta vez estamos en la lista de favoritos
+        si el pokemon ya existe éste se elimina debido a que el usuario clickeo el boton de agregar a favoritos nuevamente -->
+        <img class="btnFavoritos" v-on:click="agregarFavoritos(pokemon)"
         :src="favoritesAdded.includes(pokemon.name) == true ? require('../assets/Fav-Active.png') : require('../assets/Fav-Disabled.png')" alt="" />
       </div>
     </div>
   </div>
 
+  <!-- trannsicion de vueJS que en este caso se utilizará para crear y mostrar el modal con informacion.
+  se mostrara si la variable showModal es true, la cual irá variando dependiendo de cada accion, por ejemplo
+  el boton de cerrar la vuelve false, lo que hace que el div no se ejecute/muestre -->
   <transition name="fade" appear>
     <div class="modal-overlay" v-if="showModal">
       <div class="dataModal">
@@ -48,9 +83,11 @@
           <img class="imgCerrarModal" v-on:click="showModal = false" src="../assets/CloseModal.png" alt="" />
         </div>
 
+        <!-- datos del pokemon seleccionado -->
         <div class="datosPokemonModal">
           <p class="nombrePokemon"><span class="tagBeforeName">Name:</span> {{ nombrePokemonModal }}</p>
 
+          <!-- hr, para hacer lineas divisoras entre los datos del pokemon -->
           <hr/>
 
           <p class="pesoPokemon"><span class="tagBeforeName">Weight:</span> {{ pesoPokemonModal }}</p>
@@ -61,6 +98,9 @@
 
           <hr/>
 
+          <!-- se realiza un ciclo for en el tipo de pokemon que es, ésto debido a que un pokemon puede tener
+          muchos tipos, por lo que se recorren los tipos rescatados y se ven mostrando, asimismo se agregó un template
+          que coloca separadores por coma entre los distintos tipos de pokemon -->
           <p class="tipoPokemon"><span class="tagBeforeName">Types:</span>
             <span v-for="(tagName, index) in tipoPokemonModal" v-bind:key="index">
                 <template v-if="index > 0">, </template>
@@ -70,6 +110,7 @@
           <hr/>
         </div>
 
+        <!-- boton compartir en modal -->
         <div class="divBotonCompartir">
           <button class="botonCompartir">Share to my friends</button>
         </div>
@@ -86,6 +127,7 @@ export default {
   name: "ListaPokemones",
   data() {
     return {
+      // Variables que se utilizaran a lo largo del flujo
       info: [],
       favorites: [],
       favoritesAdded: [],
@@ -106,11 +148,18 @@ export default {
   },
   setup() {},
   created() {
+    // en este caso decidi usar axios, si bien pude usar fetch, axios lo encuentro mas versátil para
+    // este tipo de consultas/operaciones
+
+    // Realizamos la consulta metodo get para traer todos los pokemones y lo guardamos en la variable/data info de vue
     axios
       .get("https://pokeapi.co/api/v2/pokemon")
       .then((response) => (this.info = response.data.results));
   },
   methods: {
+
+    // funcion para mostrar los datos de los pokemones en el moda, destacar abrimos el modal una vez tenemos la respuesta del axios
+    // de esta manera evitamos abrir el modal y tener datos vacios mientras se hace la consulta
     modalInfoPokemon(pokemonName) {
       axios
         .get("https://pokeapi.co/api/v2/pokemon/" + pokemonName)
@@ -126,40 +175,43 @@ export default {
           )
         );
     },
+
+    // funcion para agregar a favoritos los pokemones, recirrenis el array de pokemones y si un pokemon no existe este se agrega,
+    // si el pokemon ya existe se elimina del array.
+    // 
     agregarFavoritos(pokemon) {
-      console.log(this.favorites);
-      console.log("aa", this.filteredCustomers);
       if (this.favorites.length > 0) {
         for (var i = 0; i < this.favorites.length; i++) {
           if (this.favorites[i].name == pokemon.name) {
             this.favorites.splice(i, 1);
-            this.isFavorite = false;
             this.favoritesAdded.splice(i, 1);
-            console.log("boton favoritos desactivado");
             return;
           }
         }
         this.favorites.push(pokemon);
         this.favoritesAdded.push(pokemon.name);
-        console.log("boton favoritos activado");
-        this.isFavorite = true;
       } else {
         this.favorites.push(pokemon);
         this.favoritesAdded.push(pokemon.name);
-        this.isFavorite = true;
-        console.log("boton favoritos activado");
       }
     },
+
+    //funcion para mostrar todos los pokemones, realiza los cambios en variables para mostrar/ocultar divs corresponientes
     mostrarTodo() {
       this.listAll = true;
       this.listFavorites = false;
     },
+
+    //funcion para mostrar los pokemones en favoritos, realiza los cambios en variables para mostrar/ocultar divs corresponientes
     mostrarFavoritos() {
       this.listAll = false;
       this.listFavorites = true;
     },
   },
   computed: {
+
+    // funciones para filtrar los datos mediante el input, se realiza tanto para los favoritos como para filtrar todos los pokemones
+    // en este caso la busqueda se filtrara por nombre de los pokemones
     filtrarBusquedaAll() {
       return this.info.filter((pokemon) => {
         return pokemon.name.match(this.search);
@@ -175,6 +227,10 @@ export default {
 </script>
 
 <style lang="less">
+// Definimos el tipo de lenguaje, en este caso usare LESS ya que facilita mucho el trabajo
+// aparte de dejar el código mas ordenado y legible para otras personas
+
+// importamos la URL Lato desde google
 @import url("https://fonts.googleapis.com/css2?family=Lato&display=swap&.css");
 
 .modal-overlay {
