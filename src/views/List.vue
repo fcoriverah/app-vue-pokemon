@@ -51,6 +51,17 @@ export default {
 // importamos la URL Lato desde google
 @import url("https://fonts.googleapis.com/css2?family=Montserrat&display=swap&.css");
 @import url("https://fonts.googleapis.com/css2?family=Lato&display=swap&.css");
+
+.fade-enter-from, .fade-leave-to {
+  opacity: 0;
+}
+.fade-leave-to, .fade-leave-from {
+  opacity: 1;
+}
+.fade-enter-active, .fade-leave-active {
+  transition: all 0.4s ease;
+}
+
 body {
   background-color: #e5e5e5;
   margin: 0;

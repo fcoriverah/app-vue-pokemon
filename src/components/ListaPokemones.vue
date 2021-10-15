@@ -252,14 +252,14 @@ export default {
 @import url("https://fonts.googleapis.com/css2?family=Lato&display=swap&.css");
 
 //modal transicion
-.fade-enter-from,
-.fade-leave-active {
-  transition: opacity 0.4s;
-}
-
-.fade-enter,
-.fade-leave-to {
+.fade-enter-from, .fade-leave-to {
   opacity: 0;
+}
+.fade-leave-to, .fade-leave-from {
+  opacity: 1;
+}
+.fade-enter-active, .fade-leave-active {
+  transition: all 0.4s ease;
 }
 
 //modal
@@ -434,6 +434,14 @@ export default {
   .modal-overlay {
     .dataModal {
       width: 85%;
+      .botonesInferioresModal {
+        .divBtnFavoritos {
+          .btnFavoritos {
+            padding-bottom: 20px;
+            padding-right: 31px;
+          }
+        }
+      }
     }
   }
   .ListaPokemones {

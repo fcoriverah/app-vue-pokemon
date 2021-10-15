@@ -1,6 +1,8 @@
 <template>
   <!-- Se carga el componente de "Loading" cuando se pase a la siguiente página -->
-  <Loading v-if="isLoading" />
+  <transition name="fade">
+    <Loading v-if="isLoading" />
+  </transition>
   <div class="body">
     <div class="main-container">
       <div class="img-logo">
@@ -61,6 +63,17 @@ export default {
 
 // importamos la URL Lato desde google
 @import url("https://fonts.googleapis.com/css2?family=Lato&display=swap&.css");
+
+.fade-enter-from, .fade-leave-to {
+  opacity: 0;
+}
+.fade-leave-to, .fade-leave-from {
+  opacity: 1;
+}
+.fade-enter-active, .fade-leave-active {
+  transition: all 0.4s ease;
+}
+
 body {
   background-color: #e5e5e5;
 }

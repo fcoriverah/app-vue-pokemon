@@ -1,7 +1,7 @@
 <template>
-  <div class="loading-container">
-    <img src="../assets/Loader.gif" alt="" />
-  </div>
+    <div class="loading-container">
+      <img src="../assets/Loader.gif" alt="" />
+    </div>
 </template>
 
 <script>
@@ -13,6 +13,15 @@ export default {
 
 
 <style lang="less">
+.fade-enter, .fade-leave-to {
+  opacity: 0;
+}
+
+.fade-enter-from,
+.fade-leave-active {
+  transition: opacity 0.4s;
+}
+
 body {
   background-color: #e5e5e5;
 }
