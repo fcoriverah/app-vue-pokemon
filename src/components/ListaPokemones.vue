@@ -85,7 +85,7 @@
 
         <!-- datos del pokemon seleccionado -->
         <div class="datosPokemonModal">
-          <p class="nombrePokemon"><span class="tagBeforeName">Name:</span> {{ nombrePokemonModal }}</p>
+          <p class="nombrePokemon" id="nombrePokemon"><span class="tagBeforeName">Name:</span> {{ nombrePokemonModal }}</p>
 
           <!-- hr, para hacer lineas divisoras entre los datos del pokemon -->
           <hr/>
@@ -111,10 +111,15 @@
         </div>
 
         <!-- boton compartir en modal -->
-        <div class="divBotonCompartir">
-          <button class="botonCompartir">Share to my friends</button>
+        <div class="botonesInferioresModal">
+          <div class="divBotonCompartir">
+            <button class="botonCompartir" @click="copy(nombrePokemonModal, pesoPokemonModal, alturaPokemonModal,tipoPokemonModal)">Share to my friends</button>
+          </div>
+          <div class="divBtnFavoritos">
+            <img class="btnFavoritos" v-on:click="agregarFavoritos(infoModalFavorite)"
+            :src="favoritesAdded.includes(nombrePokemonModal) == true ? require('../assets/Fav-Active.png') : require('../assets/Fav-Disabled.png')" alt="" />
+          </div>
         </div>
-
       </div>
     </div>
   </transition>
@@ -129,6 +134,7 @@ export default {
     return {
       // Variables que se utilizaran a lo largo del flujo
       info: [],
+      infoModalFavorite: [],
       favorites: [],
       favoritesAdded: [],
       isFavorite: null,
@@ -144,6 +150,7 @@ export default {
       pesoPokemonModal: "",
       alturaPokemonModal: "",
       tipoPokemonModal: "",
+      dataClipboard: []
     };
   },
   setup() {},
@@ -171,6 +178,7 @@ export default {
             (this.pesoPokemonModal = response.data.weight),
             (this.alturaPokemonModal = response.data.height),
             (this.tipoPokemonModal = response.data.types),
+            (this.infoModalFavorite = response.data),
             (this.showModal = true)
           )
         );
@@ -207,6 +215,16 @@ export default {
       this.listAll = false;
       this.listFavorites = true;
     },
+
+    async copy(nombrePokemonModal, pesoPokemonModal, alturaPokemonModal, tipoPokemonModal) {
+      this.dataClipboard = [];
+      this.dataClipboard.push(nombrePokemonModal, pesoPokemonModal, alturaPokemonModal)
+      for (let index = 0; index < tipoPokemonModal.length; index++) {
+        this.dataClipboard.push(tipoPokemonModal[index].type.name)
+      }
+      navigator.clipboard.writeText(this.dataClipboard);
+      alert('Atributos del Pokémon copiados!');
+    }
   },
   computed: {
 
@@ -309,20 +327,32 @@ export default {
         text-align: left;
       }
     }
-    .divBotonCompartir {
+    .botonesInferioresModal {
       display: flex;
-      padding-left: 35px;
-      padding-top: 10px;
-      .botonCompartir {
-        font-family: "Lato", sans-serif;
-        font-size: 18px;
-        font-weight: 700;
-        background-color: #f22539;
-        color: white;
-        border: none;
-        height: 44px;
-        width: 195px;
-        border-radius: 60px;
+      .divBotonCompartir {
+        display: flex;
+        padding-left: 35px;
+        padding-top: 10px;
+        .botonCompartir {
+          font-family: "Lato", sans-serif;
+          font-size: 18px;
+          font-weight: 700;
+          background-color: #f22539;
+          color: white;
+          border: none;
+          height: 44px;
+          width: 195px;
+          border-radius: 60px;
+        }
+      }
+      .divBtnFavoritos {
+        .btnFavoritos {
+          right: 0;
+          bottom: 0;
+          padding-bottom: 15px;
+          padding-right: 33px;
+          position: absolute;
+        }
       }
     }
   }
